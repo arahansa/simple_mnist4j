@@ -1,5 +1,6 @@
-package com.arahansa.ml;
+package com.arahansa.neuralnet;
 
+import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Component;
  * Created by jarvis on 2017. 4. 27..
  * 교차 엔트로피 오차 구함
  */
+@Slf4j
 @Component
 public class J01_CostFunction {
 
@@ -17,13 +19,13 @@ public class J01_CostFunction {
      * @param t
      * @return
      */
-    public double getCrossEntropyErr(Matrix y, Matrix t){
+    public static double getCrossEntropyErr(Matrix y, Matrix t){
+        Matrix tClone = t.exactClone();
         double delta = 1e-7;
         y.add(delta);
         y.log();
-
-        t.multiply(y);
-        return -t.elementSum();
+        tClone.multiply(y);
+        return -tClone.elementSum();
     }
 
     /**

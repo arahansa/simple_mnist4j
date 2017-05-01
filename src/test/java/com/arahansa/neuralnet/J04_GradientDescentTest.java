@@ -1,4 +1,4 @@
-package com.arahansa.ml;
+package com.arahansa.neuralnet;
 
 import mikera.matrixx.Matrix;
 import org.junit.Before;

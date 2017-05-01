@@ -1,4 +1,4 @@
-package com.arahansa.ml;
+package com.arahansa.neuralnet;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.arahansa.ml;
+package com.arahansa.neuralnet;
 
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
