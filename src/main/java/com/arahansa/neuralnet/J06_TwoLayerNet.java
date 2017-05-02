@@ -2,7 +2,11 @@ package com.arahansa.neuralnet;
 
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
+import mikera.vectorz.impl.ArraySubVector;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.arahansa.neuralnet.J00_Helper.multipleTwoMatrix;
 import static com.arahansa.neuralnet.J00_Helper.sigmoid;
@@ -42,7 +46,7 @@ public class J06_TwoLayerNet {
     }
 
     /**
-     * @param x : 입력 데이터
+     * @param x : 입력 데이터 ( ex (60000, 768) )
      * @param t : 정답 레이블
      * @return
      */
@@ -51,10 +55,28 @@ public class J06_TwoLayerNet {
         return J01_CostFunction.getCrossEntropyErr(y, t);
     }
 
-    // todo 
     public double accuracy(Matrix x, Matrix t){
-        Matrix predict = predict(x);
-        return predict.elementMax();
+        Matrix y = predict(x);
+        if(x.isSameShape(y))
+            throw new IllegalStateException("different x , t size ");
+
+        int sameCount = 0;
+        int size = y.getShape(0);
+        for(int i = 0; i< size; i++){
+            if(y.getRow(i).maxElementIndex()==t.getRow(i).maxElementIndex())
+                sameCount++;
+        }
+        double accuracy = sameCount / new Double(size);
+        return accuracy;
+    }
+
+    public Map<String, Matrix> numerical_gradient(Matrix x, Matrix t){
+
+        Map<String, Matrix> grads = new HashMap<>();
+
+
+
+        return grads;
     }
 
 

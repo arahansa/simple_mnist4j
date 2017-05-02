@@ -2,30 +2,30 @@ package com.arahansa.neuralnet;
 
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
-
 import mikera.matrixx.impl.RowMatrix;
 import mikera.vectorz.Vector;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
+import static org.junit.Assert.*;
 
 /**
- * Created by jarvis on 2017. 4. 27..
+ * Created by jarvis on 2017. 5. 2..
  */
 @Slf4j
-public class J05_SimpleNetTest {
-
+public class J05_SimpleNetJava8Test {
 
     J00_Helper helper;
     J01_CostFunction costFunction;
-    J05_SimpleNet simpleNet;
+    J05_SimpleNetJava8 simpleNet;
 
     @Before
     public void setup(){
         helper = new J00_Helper();
         costFunction = new J01_CostFunction();
-        simpleNet = new J05_SimpleNet(helper, costFunction);
+        simpleNet = new J05_SimpleNetJava8(helper, costFunction);
     }
 
     @Test
@@ -47,10 +47,11 @@ public class J05_SimpleNetTest {
 
         Matrix t = Matrix.create(1,3);
         t.setElements(0,0,1);
-        final double loss = simpleNet.loss(x, t);
+        final double loss = simpleNet.lossFunc.apply(x, t);
         log.info("loss : {}", loss);
         assertThat(loss).isEqualTo(0.9280, offset(0.0001));
     }
+
 
     @Test
     public void 심플넷_기울기_구하기() throws Exception{
@@ -70,7 +71,7 @@ public class J05_SimpleNetTest {
         );
         simpleNet.setW(w);
 
-        Matrix dW = simpleNet.numerical_gradient(x, t, w);
+        Matrix dW = simpleNet.numerical_gradient(simpleNet.lossFunc, x, t, w);
         log.info("dw :{}" , dW);
 
         Matrix answer = Matrix.create(2,3);

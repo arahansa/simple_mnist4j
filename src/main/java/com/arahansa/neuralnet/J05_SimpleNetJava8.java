@@ -4,14 +4,14 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import java.util.function.BiFunction;
 
 /**
- * Created by jarvis on 2017. 4. 27..
+ * Created by jarvis on 2017. 5. 2..
  */
 @Slf4j
-@Component
-public class J05_SimpleNet implements LossFunction {
+public class J05_SimpleNetJava8 implements LossFunction{
 
     J01_CostFunction costFunction;
     J00_Helper helper;
@@ -21,7 +21,7 @@ public class J05_SimpleNet implements LossFunction {
 
 
     @Autowired
-    public J05_SimpleNet(J00_Helper helper, J01_CostFunction costFunction){
+    public J05_SimpleNetJava8(J00_Helper helper, J01_CostFunction costFunction){
         this.helper = helper;
         this.costFunction = costFunction;
     }
@@ -36,6 +36,12 @@ public class J05_SimpleNet implements LossFunction {
         return costFunction.getCrossEntropyErr(y, t);
     }
 
+    BiFunction<Matrix, Matrix, Double> lossFunc = (x,t)->{
+        Matrix z = predict(x);
+        Matrix y = helper.softmax(z);
+        return costFunction.getCrossEntropyErr(y, t);
+    };
+
 
     /**
      * (w = 초기 가중치)를 받고 다음 가중치를 보여줌
@@ -44,7 +50,7 @@ public class J05_SimpleNet implements LossFunction {
      * @param w
      * @return
      */
-    public Matrix numerical_gradient(Matrix x, Matrix t, Matrix w){
+    public Matrix numerical_gradient(BiFunction<Matrix, Matrix, Double> f, Matrix x, Matrix t, Matrix w){
         double h = 1e-4;
         Matrix grad = new Matrix(w.getShape(0), w.getShape(1));
 
@@ -58,13 +64,13 @@ public class J05_SimpleNet implements LossFunction {
                 w.set(i,j, (tmp_val+h) );
                 log.info(" 1 w : {}", w);
                 this.setW(w);
-                double fxh1 = loss(x, t);
+                double fxh1 = f.apply(x,t);
 
                 // f(x-h) 계산
                 w.set(i,j, (tmp_val-h) );
                 this.setW(w);
                 log.info(" 2 w : {}", w);
-                double fxh2 = loss(x, t);
+                double fxh2 = f.apply(x, t);
 
 
                 final double v = (fxh1 - fxh2) / (2 * h);
@@ -78,7 +84,5 @@ public class J05_SimpleNet implements LossFunction {
         }
         return grad;
     }
-
-
 
 }
