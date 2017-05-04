@@ -8,6 +8,13 @@ import mikera.vectorz.AVector;
 import mikera.vectorz.Vector;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.assertj.core.api.Assertions.offset;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -138,5 +145,44 @@ public class J00_HelperTest {
     @Test
     public void 정규분포행렬얻기() throws Exception{
         log.info("정규분포 행렬 :{} ", J00_Helper.getRadNMatrix(2,2));
+    }
+
+
+    static class Counter{
+        static int count;
+        static void plus(){
+            count++;
+        }
+    }
+    @Test
+    public void 랜덤중복되지않은숫자만들기() throws Exception{
+        List<Integer> range = IntStream.rangeClosed(0, 99).boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
+        Collections.shuffle(range);
+
+        Counter counter = new Counter();
+        range.subList(1, 10).forEach(n->{
+            counter.plus();
+            System.out.println(n);
+        });
+        System.out.println("after :"+counter.count);
+    }
+
+    @Test
+    public void getBatchMatrixTest() throws Exception{
+        Matrix x = Matrix.create(5, 10);
+        Matrix t = Matrix.create(5, 5);
+
+
+        x.setElements(IntStream.range(0,50).mapToDouble(Double::new).toArray());
+        t.setElements(IntStream.range(0,25).mapToDouble(Double::new).toArray());
+
+        log.info("x :{}", x);
+
+        Map<String, Matrix> batchMatrix = J00_Helper.getBatchMatrix(x, t, 2);
+
+        log.info("x_batch :{}", batchMatrix.get("x_batch"));
+        log.info("t_batch :{}", batchMatrix.get("t_batch"));
+
     }
 }

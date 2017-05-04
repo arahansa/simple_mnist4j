@@ -21,8 +21,6 @@ import java.util.List;
 @Component
 public class Img2Matrix {
 
-
-
     /**
      * 검은색은 1, 흰색이면 0 으로 된 흑백 숫자정보를 가지고 있는 행렬 반환
      * Color 에서 RGB 가 -1 이면 흰색이다.

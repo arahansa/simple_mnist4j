@@ -19,6 +19,8 @@ dependencies {
 
     // util
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.8'
+    compile group: 'org.springframework.data', name: 'spring-data-commons-core', version: '1.4.1.RELEASE'
+
 
     // logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'

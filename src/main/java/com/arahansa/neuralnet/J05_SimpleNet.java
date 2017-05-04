@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class J05_SimpleNet implements LossFunction {
+public class J05_SimpleNet{
 
     J01_CostFunction costFunction;
     J00_Helper helper;
@@ -57,12 +57,10 @@ public class J05_SimpleNet implements LossFunction {
                 // f(x+h) 계산
                 w.set(i,j, (tmp_val+h) );
                 log.info(" 1 w : {}", w);
-                this.setW(w);
                 double fxh1 = loss(x, t);
 
                 // f(x-h) 계산
                 w.set(i,j, (tmp_val-h) );
-                this.setW(w);
                 log.info(" 2 w : {}", w);
                 double fxh2 = loss(x, t);
 
@@ -73,7 +71,6 @@ public class J05_SimpleNet implements LossFunction {
 
                 // 값 복원
                 w.set(i,j, tmp_val);
-                this.setW(w);
             }
         }
         return grad;

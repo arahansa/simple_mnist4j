@@ -17,15 +17,11 @@ import static org.junit.Assert.*;
 @Slf4j
 public class J05_SimpleNetJava8Test {
 
-    J00_Helper helper;
-    J01_CostFunction costFunction;
     J05_SimpleNetJava8 simpleNet;
 
     @Before
     public void setup(){
-        helper = new J00_Helper();
-        costFunction = new J01_CostFunction();
-        simpleNet = new J05_SimpleNetJava8(helper, costFunction);
+        simpleNet = new J05_SimpleNetJava8();
     }
 
     @Test
@@ -71,7 +67,7 @@ public class J05_SimpleNetJava8Test {
         );
         simpleNet.setW(w);
 
-        Matrix dW = simpleNet.numerical_gradient(simpleNet.lossFunc, x, t, w);
+        Matrix dW = J07_Gradient.numerical_gradient(simpleNet.lossFunc, x, t, w);
         log.info("dw :{}" , dW);
 
         Matrix answer = Matrix.create(2,3);

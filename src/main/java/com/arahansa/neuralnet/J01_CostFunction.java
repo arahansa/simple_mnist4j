@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
 import org.springframework.stereotype.Component;
 
+import java.util.function.BiFunction;
+
 /**
  * Created by jarvis on 2017. 4. 27..
  * 교차 엔트로피 오차 구함
@@ -44,8 +46,6 @@ public class J01_CostFunction {
 
         return getCrossEntropyErr(y, t);
     }
-
-
 
 
 }
