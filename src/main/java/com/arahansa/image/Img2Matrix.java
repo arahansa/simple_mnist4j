@@ -42,7 +42,7 @@ public class Img2Matrix {
         Matrix m  = new Matrix(1, img.getWidth()* img.getHeight());
         log.debug("매트릭스 1 * ({}*{}) 짜리 생성.", img.getWidth(), img.getHeight());
         addMatrixByImg(img, m);
-        log.debug("반환되는 matrix : {}", m);
+        log.debug("fileName :{} , 반환되는 matrix : {}",fileName,  m);
         return m;
     }
 

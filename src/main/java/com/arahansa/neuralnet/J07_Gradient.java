@@ -37,8 +37,9 @@ public class J07_Gradient {
 
 
                 final double v = (fxh1 - fxh2) / (2 * h);
-                if(J06_TwoLayerNet.Context.local.get()!=null){
-                    log.info("loss1 : {}, loss2 : {}, 미분 : {}, pos ({}, {})", fxh1, fxh2, v, i,j);
+                String pos = J06_TwoLayerNet.Context.local.get();
+                if(pos !=null){
+                    log.info("pos : {} , loss1 : {}, loss2 : {}, 미분 : {}, pos ({}, {})",pos, fxh1, fxh2, v, i,j);
                 }
 
                 grad.set(i,j, v);

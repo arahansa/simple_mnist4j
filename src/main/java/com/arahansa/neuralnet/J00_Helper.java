@@ -7,7 +7,6 @@ import mikera.vectorz.AVector;
 import mikera.vectorz.impl.AStridedVector;
 import mikera.vectorz.impl.ArraySubVector;
 import org.springframework.stereotype.Component;
-import sun.tools.jconsole.MaximizableInternalFrame;
 
 import javax.swing.plaf.basic.BasicTableHeaderUI;
 import java.util.*;

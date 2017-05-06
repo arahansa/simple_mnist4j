@@ -64,6 +64,7 @@ public class J06_TwoLayerNet {
 
     BiFunction<Matrix, Matrix, Double> lossFunc = (x, t)->{
         Matrix y = predict(x);
+
         double crossEntropyErr = J01_CostFunction.getCrossEntropyErr4Batch(y, t);
         return crossEntropyErr;
     };
@@ -85,22 +86,20 @@ public class J06_TwoLayerNet {
                 sameCount++;
             }
         }
+        log.info("same Count : {} , size : {}", sameCount, size );
         double accuracy = sameCount / new Double(size);
         return accuracy;
     }
 
     public Grad numerical_gradient(Matrix x, Matrix t){
         Grad grad = new Grad();
+        Context.local.set("W1");
         Matrix w1 = J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.W1);
         grad.setW1(w1);
-        grad.setB1(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.b1));
-
-        Context.local.set("b1");
-        grad.setW2(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.W2));
         Context.local.set(null);
-
+        grad.setB1(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.b1));
+        grad.setW2(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.W2));
         grad.setB2(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.b2));
-
         return grad;
     }
 
@@ -184,13 +183,13 @@ public class J06_TwoLayerNet {
 
 
     public void renewParams(Grad grad, Double learning_rate){
-        log.info("W1 shape : {}, gradW1 shape: {} ",this.W1.getShape(), grad.getW1().getShape());
-        log.info("before renew param 1 : {}", this.W1.getRow(0));
+        // log.info("W1 shape : {}, gradW1 shape: {} ",this.W1.getShape(), grad.getW1().getShape());
+        // log.info("before renew param 1 : {}", this.W1.getRow(0));
         Matrix w1 = grad.getW1();
         w1.multiply(-1*learning_rate);
-        log.info("grad w1 :{}", w1.getRow(0));
+        // log.info("grad w1 :{}", w1.getRow(0));
         W1.add(w1);
-        log.info("after renew param 1 : {}", this.W1.getRow(0));
+        // log.info("after renew param 1 : {}", this.W1.getRow(0));
         Matrix w2 = grad.getW2();
         w2.multiply(-1*learning_rate);
         W2.add(w2);
