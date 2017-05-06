@@ -64,7 +64,7 @@ public class J06_TwoLayerNetTest {
             Double loss = network.lossFunc.apply(x_batch, t_batch);
             train_loss_list.add(loss);
 
-            if( i % iter_per_epoch == 0){
+            if( i % 10 == 0){
                 double train_acc = network.accuracy(x_train, t_train);
                 double test_acc = network.accuracy(x_test, t_test);
 
@@ -111,6 +111,40 @@ public class J06_TwoLayerNetTest {
 
         log.info("v: {}", x);
     }
+
+
+    @Test
+    public void gradTest() throws Exception{
+
+        Matrix x = Matrix.create(3,3);
+        x.setElements(
+                1,2,3,
+                4,5,6,
+                7,8,9);
+
+        Matrix t = Matrix.create(3,3);
+        t.setElements(
+                1,0,0,
+                1,0,0,
+                1,0,0);
+
+
+        J06_TwoLayerNet network = new J06_TwoLayerNet(3, 3, 3, 1.0f);
+        network.setW1(x);
+        network.setW2(x.copy());
+        log.info("network w2 :{}", network.getW2());
+        Grad grad = network.numerical_gradient(x, t);
+        log.info("after grad: \n {}", grad);
+        // network.renewParams(grad, 1.0);
+
+
+        /*grad = network.numerical_gradient(x, t);
+        network.renewParams(grad, 1.0);*/
+
+    }
+
+
+
 
 
 

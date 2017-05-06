@@ -41,4 +41,24 @@ public class J01_CostFunctionTest {
         assertThat(crossEntropyErr).isEqualTo(0.10536, offset(0.5));
     }
 
+
+    @Test
+    public void costErr() throws Exception{
+
+        Matrix m = Matrix.create(3,3);
+
+        m.setElements(0.00235587 , 0.04731414,  0.95032999,
+                0.00235587 , 0.04731414,  0.95032999,
+                0.00235587 , 0.04731414,  0.95032999);
+
+
+        Matrix t = Matrix.create(3,3);
+        t.setElements(1.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,0.0);
+
+        double crossEntropyErr = J01_CostFunction.getCrossEntropyErr4Batch(m, t);
+        log.info("cross ent  : {}", crossEntropyErr);
+
+
+        assertThat(crossEntropyErr).isEqualTo(6.05, offset(0.001));
+    }
 }

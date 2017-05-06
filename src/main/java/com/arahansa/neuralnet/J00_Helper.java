@@ -1,9 +1,13 @@
 package com.arahansa.neuralnet;
 
+import com.arahansa.exception.MatrixShapeException;
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
 import mikera.vectorz.AVector;
+import mikera.vectorz.impl.AStridedVector;
+import mikera.vectorz.impl.ArraySubVector;
 import org.springframework.stereotype.Component;
+import sun.tools.jconsole.MaximizableInternalFrame;
 
 import javax.swing.plaf.basic.BasicTableHeaderUI;
 import java.util.*;
@@ -25,14 +29,57 @@ public class J00_Helper {
         return x;
     }
 
+    /*
+    def sigmoid_grad(x):
+            return (1.0 - sigmoid(x)) * sigmoid(x)
+    */
+
+    public static Matrix sigmoid_grad(Matrix x){
+        Matrix x_copy = x.copy();
+
+        Matrix sigmoidX = sigmoid(x_copy);
+        sigmoidX.multiply(-1);
+
+        Matrix m1 = Matrix.create(x.getShape(0), x.getShape(1));
+        m1.add(1);
+        m1.add(sigmoidX); // 1 - sigmoid(x)
+
+
+        m1.multiply(sigmoid(x.copy())); // * sigmoid(x)
+        return m1;
+    }
+
 
     public static Matrix softmax(Matrix m){
-        double max = m.elementMax();
-        m.add(-max);
-        m.exp();
-        double sum = m.elementSum();
-        m.divide(sum);
-        return m;
+        Matrix x = transpose(m);
+
+        Matrix max = max0Dimen(x);
+        max.multiply(-1);
+        x = add(x, max); // x = x- np.max(x)
+
+        x.exp();
+
+        Matrix xExp = x.copy();
+        Matrix npSum = sum(xExp);
+        x = divide(x, npSum);
+        return transpose(x);
+    }
+
+    /**
+     * np.transpose
+     * @param x
+     * @return
+     */
+    public static Matrix transpose(Matrix x){
+        if(x.getShape(0)==x.getShape(1)){
+            Matrix copy = x.copy();
+            copy.transposeInPlace();
+            return copy;
+        }
+        Matrix r = Matrix.create(x.getShape(1), x.getShape(0));
+        for(int i=0;i<x.getShape(1);i++)
+            r.setRow(i, x.getColumn(i));
+        return r;
     }
 
     /**
@@ -59,6 +106,25 @@ public class J00_Helper {
             }
         }
         return multiplied;
+    }
+
+    /**
+     * matrix shape 이 안 맞을때 divide
+     * @param x
+     * @param y
+     * @return
+     */
+    public static Matrix divideTwoMatrix(Matrix x, Matrix y){
+        if(x.getShape(1)!=y.getShape(1)){
+            log.info("x shape : ({}, {}), y shape : ({}, {})", x.getShape(0), x.getShape(1), y.getShape(0), y.getShape(1));
+            throw new IllegalStateException("x column : "+x.getShape(1)+", y row :"+y.getShape(0)+" different.");
+        }
+
+        Matrix divided = x.copy();
+        ArraySubVector yRow = y.getRow(0);
+        for(int i=0;i<x.getShape(0);i++)
+            divided.getRow(i).divide(yRow);
+        return divided;
     }
 
     /**
@@ -119,6 +185,179 @@ public class J00_Helper {
                 .collect(Collectors.toCollection(ArrayList::new));
         Collections.shuffle(range);
         return range.subList(0, batch_size);
+    }
+
+
+    // np.sum 차원 축소
+    public static Matrix sum(Matrix x){
+        int size = x.getShape(1);
+        Matrix z = transpose(x);
+
+        Matrix y = Matrix.create(1, size);
+
+        for(int i=0;i<size;i++){
+            double v = z.getRow(i).elementSum();
+            y.set(0, i, v);
+        }
+        return y;
+    }
+
+    /**
+     * [5,4,1,
+     *  2,3,4,
+     *  4,5,2]
+     *
+     *  => [5,5,4] (세로에서 뽑는다)
+     * @param x
+     * @return
+     */
+    public static Matrix max0Dimen(Matrix x){
+        int size = x.getShape(1);
+        Matrix result = Matrix.create(1, size);
+
+        for(int i=0;i < size; i++){
+            double v = x.getColumn(i).elementMax();
+            result.set(0,i,v);
+        }
+        return result;
+    }
+
+    /**
+     * [5,4,1,
+     *  2,3,4,
+     *  4,5,2]
+     *
+     *  => [5,4,5] (가로에서 뽑는다)
+     * @param x
+     * @return
+     */
+    public static Matrix max1Dimen(Matrix x){
+        int size = x.getShape(0);
+        Matrix result = Matrix.create(1, size);
+
+        for(int i=0;i < size; i++){
+            double v = x.getRow(i).elementMax();
+            result.set(0,i,v);
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param y
+     * @param t
+     * @return
+     */
+    public static Matrix collectByTmaxElem(Matrix y, Matrix t){
+        if(!y.isSameShape(t)) throw new MatrixShapeException(y,t);
+        int size = y.getShape(0);
+        Matrix result = Matrix.create(1, size);
+        for(int i=0;i<size;i++){
+            int j = t.getRow(i).maxElementIndex();
+            result.set(0, i, y.get(i,j));
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public static Matrix add(Matrix x, Matrix y){
+        Matrix copy = x.copy();
+        if(y.getShape(0)==1 && y.getShape(1)==1){
+            copy.add(y.get(0,0));
+            return copy;
+        }
+        if(x.getShape(0)==1 && x.getShape(1)==1){
+            copy = y.copy();
+            copy.add(x.get(0,0));
+            return copy;
+        }
+        // x [10, 100] y : [1, 100]
+        if(y.getShape(0)==1) {
+            if (x.getShape(1) != y.getShape(1)) throw new MatrixShapeException(x, y);
+            ArraySubVector yRow = y.getRow(0);
+            for (int i = 0; i < copy.getShape(0); i++) {
+                copy.getRow(i).add(yRow);
+            }
+            return copy;
+        }
+        // x[ 100, 10] y [ 100, 1]
+        if(y.getShape(1)==1){
+            if(x.getShape(0)!=y.getShape(0)) throw new MatrixShapeException(x, y);
+            AStridedVector yColumn = y.getColumn(0);
+            for(int i=0;i<copy.getShape(1);i++){
+                copy.getColumn(i).add(yColumn);
+            }
+            return copy;
+        }
+        copy.add(y);
+        return copy;
+    }
+
+    public static Matrix divide(Matrix x, Matrix y){
+        Matrix copy = x.copy();
+        if(y.getShape(0)==1 && y.getShape(1)==1){
+            copy.divide(y.get(0,0));
+            return copy;
+        }
+        if(x.getShape(0)==1 && x.getShape(1)==1){
+            copy = y.copy();
+            copy.divide(x.get(0,0));
+            return copy;
+        }
+
+        // x [10, 100] y : [1, 100]
+        if(y.getShape(0)==1) {
+            if (x.getShape(1) != y.getShape(1)) throw new MatrixShapeException(x, y);
+            ArraySubVector yRow = y.getRow(0);
+            for (int i = 0; i < copy.getShape(0); i++) {
+                copy.getRow(i).divide(yRow);
+            }
+            return copy;
+        }
+        // x[ 100, 10] y [ 100, 1]
+        if(y.getShape(1)==1){
+            if(x.getShape(0)!=y.getShape(0)) throw new MatrixShapeException(x, y);
+            AStridedVector yColumn = y.getColumn(0);
+            for(int i=0;i<copy.getShape(1);i++){
+                copy.getColumn(i).divide(yColumn);
+            }
+            return copy;
+        }
+        copy.divide(y);
+        return copy;
+    }
+
+    /**
+     * np.argmax.
+     * axis 는 현재 0 과 1일 상황만을 가정한다
+     * @param x
+     * @param axis
+     * @return
+     */
+    public static Matrix argmax(Matrix x, int axis){
+        if(axis !=0 && axis != 1)
+            throw new IllegalStateException();
+
+        int size = axis==0 ? x.getShape(1) : x.getShape(0);
+        Matrix m = Matrix.create(1, size);
+
+        if(axis==0){
+            for(int i=0;i<size;i++){
+                int maxIdx = x.getColumn(i).maxElementIndex();
+                m.set(0,i, maxIdx);
+            }
+        }else{
+            for(int i=0;i<size;i++){
+                int maxIdx = x.getRow(i).maxElementIndex();
+                m.set(0,i, maxIdx);
+            }
+        }
+        return m;
     }
 
 

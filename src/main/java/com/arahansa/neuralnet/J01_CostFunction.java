@@ -39,12 +39,17 @@ public class J01_CostFunction {
      * @param t
      * @return
      */
-    public double getCrossEntropyErr4Batch(Matrix y, Matrix t){
+    public static double getCrossEntropyErr4Batch(Matrix y, Matrix t){
         // 1차원일 때의 처리는 생략. 왜냐면 매트릭스만 받는다..
 
         // 원핫 인코딩 처리
 
-        return getCrossEntropyErr(y, t);
+        int batch_size = y.getShape(0);
+        Matrix y_max = J00_Helper.collectByTmaxElem(y, t);
+        y_max.log();
+        double sum = y_max.elementSum();
+        double v = sum / batch_size;
+        return -v;
     }
 
 
