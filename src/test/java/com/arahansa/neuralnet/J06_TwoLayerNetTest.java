@@ -149,7 +149,8 @@ public class J06_TwoLayerNetTest {
 
     @Test
     public void testLearn() throws Exception{
-        J06_TwoLayerNet network = new J06_TwoLayerNet(15, 20, 10, 1.0f);
+        double learning_rate = 0.2;
+        J06_TwoLayerNet network = new J06_TwoLayerNet(15, 20, 10, new Float(learning_rate));
         List<Double> accList = new ArrayList<>();
         Matrix w1 = Matrix.create(15, 20);
         w1.setElements(
@@ -196,6 +197,10 @@ public class J06_TwoLayerNetTest {
         network.setW2(w2);
 
         LoadMnist loadMnist = new LoadMnist();
+        Map<String, Matrix> lm = loadMnist.loadMnist();
+        Matrix x_test = lm.get("x_test");
+        Matrix t_test = lm.get("t_test");
+
         Map<Integer, Matrix> xtrainSampleMap = loadMnist.getXtrainSampleMap();
         Map<Integer, Matrix> ttrainSampleMap = loadMnist.getTtrainSampleMap();
 
@@ -219,7 +224,7 @@ public class J06_TwoLayerNetTest {
 
         for(int i=0;i<100;i++){
             grad = network.numerical_gradient(x_batch, t_batch);
-            network.renewParams(grad, 1.0);
+            network.renewParams(grad, learning_rate);
             loss = network.lossFunc.apply(x_batch, t_batch);
             log.info("loss: {}", loss);
             final double accuracy = network.accuracy(x_batch, t_batch);
