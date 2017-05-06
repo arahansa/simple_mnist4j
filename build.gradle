@@ -35,7 +35,6 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-web')
 
-
     // math
     compile group: 'net.mikera', name: 'vectorz', version: '0.65.0'
 

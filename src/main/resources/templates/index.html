@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Hello I'm arahansa</title>
+    <link href="/css/test2.css"  rel="stylesheet" type="text/css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+<h3>숫자를 그려(?)주세요오?</h3>
+
+
+<form method="post">
+    <div class="wrap" style="margin-top:30px;margin-left:30px;">
+        <!-- 참조 : https://codepen.io/bbodine1/pen/novBm -->
+        <!-- .squaredOne -->
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne1" name="check"  />
+            <label for="squaredOne1"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne2" name="check"  />
+            <label for="squaredOne2"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne3" name="check"  />
+            <label for="squaredOne3"></label>
+        </div>
+
+        <br/>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne4" name="check"  />
+            <label for="squaredOne4"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne5" name="check"  />
+            <label for="squaredOne5"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne6" name="check"  />
+            <label for="squaredOne6"></label>
+        </div>
+
+        <br/>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne7" name="check"  />
+            <label for="squaredOne7"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne8" name="check"  />
+            <label for="squaredOne8"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne9" name="check"  />
+            <label for="squaredOne9"></label>
+        </div>
+
+        <br/>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne10" name="check"  />
+            <label for="squaredOne10"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne11" name="check"  />
+            <label for="squaredOne11"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne12" name="check"  />
+            <label for="squaredOne12"></label>
+        </div>
+
+        <br/>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne13" name="check"  />
+            <label for="squaredOne13"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne14" name="check"  />
+
+            <label for="squaredOne14"></label>
+        </div>
+        <div class="squaredOne">
+            <input type="checkbox" value="1" id="squaredOne15" name="check"  />
+            <label for="squaredOne15"></label>
+        </div>
+
+        <!-- end .squaredOne -->
+    </div>
+
+
+<br/>
+<input type="button" class="submit" data-action="/draw" value="이 그림을 그려서 내볼래요!"/>
+
+<br/>
+
+<div style="color:white" th:if="${p ne null}">
+    <h3 style="color:white;"  th:text="'당신이 입력하신 숫자는 ' + ${p}+' 이군요!!'"></h3>
+    <br/>
+    <p>만약 답이 틀렸다면 <b style="color:red">참교육</b>을 시켜주세요...</p>
+    <p>위에 다시 그려주시고, 다음의 답을 적어서 보내주시면 됩니다.</p>
+    <select name="realanswer">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+    </select>
+    <input type="button" class="submit" data-action="/real-education"  value="참교육"/>
+</div>
+
+
+</form>
+
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script>
+    $("input").click(function(){$(this).toggleClass("checked");});
+    $(".submit").click(function(){
+        $("input:checkbox:not(:checked)").val("0").prop('checked', true);
+        var action = $(this).data("action");
+        $("form").attr('action', action).submit();
+    });
+</script>
+</body>
+</html>
