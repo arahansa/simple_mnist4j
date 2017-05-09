@@ -11,7 +11,6 @@ import java.util.function.BiFunction;
  * 교차 엔트로피 오차 구함
  */
 @Slf4j
-@Component
 public class J01_CostFunction {
 
     /**
@@ -41,9 +40,6 @@ public class J01_CostFunction {
      */
     public static double getCrossEntropyErr4Batch(Matrix y, Matrix t){
         // 1차원일 때의 처리는 생략. 왜냐면 매트릭스만 받는다..
-
-        // 원핫 인코딩 처리
-
         int batch_size = y.getShape(0);
         Matrix y_max = J00_Helper.collectByTmaxElem(y, t);
         y_max.log();

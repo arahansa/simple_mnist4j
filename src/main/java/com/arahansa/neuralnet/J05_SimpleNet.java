@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  * Created by jarvis on 2017. 4. 27..
  */
 @Slf4j
-@Component
 public class J05_SimpleNet{
 
     J01_CostFunction costFunction;

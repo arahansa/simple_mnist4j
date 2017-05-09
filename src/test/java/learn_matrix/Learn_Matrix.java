@@ -35,7 +35,7 @@ public class Learn_Matrix {
     }
 
     @Test
-    public void 행렬_잘못된_더하기() throws Exception{
+    public void 행렬_더하기() throws Exception{
         Matrix matrix = Matrix.create(2,2);
         matrix.add(1);
         matrix.add(2);
@@ -48,12 +48,11 @@ public class Learn_Matrix {
     public void 차원구하기() throws Exception{
         Matrix m = Matrix.create(1,2);
         m.setElements(5,6);
-        System.out.println(m.getShape()[0]);
-        System.out.println(m.getShape()[1]);
 
         System.out.println(m.getShape(0));
         System.out.println(m.getShape(1));
-        System.out.println(new Matrix(2,5));
+
+        System.out.println(m);
     }
 
 

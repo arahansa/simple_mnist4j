@@ -1,4 +1,4 @@
-package com.arahansa.springboot;
+package com.arahansa;
 
 /**
  * Created by arahansa on 2017-05-06.
@@ -7,7 +7,6 @@ package com.arahansa.springboot;
 import com.arahansa.data.Grad;
 import com.arahansa.image.LoadMnist;
 import com.arahansa.neuralnet.J06_TwoLayerNet;
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
 import mikera.vectorz.impl.ArraySubVector;
@@ -17,12 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 

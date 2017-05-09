@@ -11,27 +11,27 @@ import java.util.function.Function;
  * Created by jarvis on 2017. 4. 27..
  */
 @Slf4j
-@Component
 public class J04_GradientDescent {
 
     J03_NumericGradient numericGradient;
 
-    @Autowired
     J04_GradientDescent(J03_NumericGradient j03_numericGradient){
         this.numericGradient = j03_numericGradient;
     }
 
     /**
      * 경사하강법
-     * @param f
-     * @param init_x
-     * @param lr
-     * @param step_num
+     * @param f 기울기에 사용될 함수
+     * @param init_x 초기 행렬
+     * @param lr 학습률
+     * @param step_num 반복수
      * @return
      */
-    public Matrix getGradientDescent(Function<Matrix, Double> f, Matrix init_x, double lr, int step_num){
-        Matrix x = init_x;
+    public Matrix getGradientDescent(Function<Matrix, Double> f,
+                                     Matrix init_x,
+                                     double lr, int step_num){
 
+        Matrix x = init_x.copy();
         for(int i=0;i<step_num;i++){
             Matrix grad = numericGradient.getNumericGradient(f, x);
 
@@ -40,7 +40,6 @@ public class J04_GradientDescent {
 
             x.add(grad);
             log.debug("x : {}", x);
-
         }
         return x;
     }

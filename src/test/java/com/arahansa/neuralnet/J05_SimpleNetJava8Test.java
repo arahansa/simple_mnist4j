@@ -36,15 +36,17 @@ public class J05_SimpleNetJava8Test {
         Matrix x = Matrix.create(1,2);
         x.setElements(0.6, 0.9);
         final Matrix p = simpleNet.predict(x);
-        log.info("p :{}", p);
-
-        RowMatrix answer = new RowMatrix(Vector.of(1.054148091, 0.630716529, 1.132807401));
-        assertThat(answer.equals(p)).isTrue();
+        log.info("\n predict : {}", p);
+        log.info("\n softmax predict :{}", J00_Helper.softmax(p));
 
         Matrix t = Matrix.create(1,3);
         t.setElements(0,0,1);
         final double loss = simpleNet.lossFunc.apply(x, t);
-        log.info("loss : {}", loss);
+        log.info("\n loss : {}", loss);
+
+
+        RowMatrix answer = new RowMatrix(Vector.of(1.054148091, 0.630716529, 1.132807401));
+        assertThat(answer.equals(p)).isTrue();
         assertThat(loss).isEqualTo(0.9280, offset(0.0001));
     }
 

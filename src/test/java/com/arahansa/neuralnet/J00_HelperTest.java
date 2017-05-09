@@ -71,13 +71,25 @@ public class J00_HelperTest {
         Matrix m = new Matrix(1,3);
         m.setElements(1010, 1000, 990);
 
-        J00_Helper helper = new J00_Helper();
-        final Matrix softmax = helper.softmax(m);
-        log.info("softmax : {}", softmax);
+        Matrix softmax = J00_Helper.softmax(m);
+        log.info("softmax : \n{}", softmax);
 
-        assertThat(0.99).isEqualTo(softmax.get(0,0), offset(0.02));
-        assertThat(softmax.get(0,1)).isEqualTo(0.0000453, offset(0.02));
-        assertThat(softmax.get(0,2)).isEqualTo(2.06E-9, offset(0.02));
+        assertThat(0.99).isEqualTo(softmax.get(0,0), offset(0.01));
+        assertThat(softmax.get(0,1)).isEqualTo(0.0000453, offset(0.0000001));
+        assertThat(softmax.get(0,2)).isEqualTo(2.06E-9, offset(0.00000001));
+    }
+
+    @Test
+    public void softmax2() throws Exception{
+        Matrix m = new Matrix(1,3);
+        m.setElements(0.3, 2.9, 4.0);
+
+        Matrix softmax = J00_Helper.softmax(m);
+        log.info("softmax : \n{}", softmax);
+
+        assertThat(softmax.get(0,0)).isEqualTo(0.018, offset(0.001));
+        assertThat(softmax.get(0,1)).isEqualTo(0.245, offset(0.001));
+        assertThat(softmax.get(0,2)).isEqualTo(0.736, offset(0.001));
     }
 
 

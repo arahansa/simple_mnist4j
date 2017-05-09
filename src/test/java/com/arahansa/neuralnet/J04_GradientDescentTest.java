@@ -37,9 +37,11 @@ public class J04_GradientDescentTest {
         Matrix gradientDescent = this.gradientDescent.getGradientDescent(f, m, 0.01, 100);
         System.out.println("final "+ gradientDescent);
 
-        assertThat(gradientDescent.get(0,0)).isEqualTo(0.3978, offset(0.4));
-        assertThat(gradientDescent.get(0,1)).isEqualTo(0.5304, offset(0.4));
+        assertThat(gradientDescent.get(0,0)).isEqualTo(0.3978, offset(0.0001));
+        assertThat(gradientDescent.get(0,1)).isEqualTo(0.5304, offset(0.0001));
     }
+
+
 
 
 }

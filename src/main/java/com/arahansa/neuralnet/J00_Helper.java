@@ -161,15 +161,15 @@ public class J00_Helper {
         Matrix x_batch = Matrix.create(batch_size, x.getShape(1));
         Matrix t_batch = Matrix.create(batch_size, t.getShape(1));
 
-
-        generateRandomUniqueNumbers(x.getShape(0), batch_size).forEach(n->{
-            // log.info("n : {}", n);
-            x_batch.add(x.getRow(n));
-            t_batch.add(t.getRow(n));
-        });
-
+        // x.getShape(0) 10000 개 중에서 batch_size 100 개 골라냄..
+        List<Integer> randomUniqueNumbers = generateRandomUniqueNumbers(x.getShape(0), batch_size);
+        for(int i=0;i<randomUniqueNumbers.size();i++){
+            x_batch.setRow(i, x.getRow(randomUniqueNumbers.get(i)));
+            t_batch.setRow(i, t.getRow(randomUniqueNumbers.get(i)));
+        }
         map.put("x_batch", x_batch);
         map.put("t_batch", t_batch);
+
         return map;
     }
 
@@ -183,7 +183,9 @@ public class J00_Helper {
         List<Integer> range = IntStream.range(0, max).boxed()
                 .collect(Collectors.toCollection(ArrayList::new));
         Collections.shuffle(range);
-        return range.subList(0, batch_size);
+        List<Integer> integers = range.subList(0, batch_size);
+
+        return integers;
     }
 
 
@@ -242,7 +244,7 @@ public class J00_Helper {
     }
 
     /**
-     *
+     * T 에서 최대인 쪽의 값만을 가져온다.
      * @param y
      * @param t
      * @return

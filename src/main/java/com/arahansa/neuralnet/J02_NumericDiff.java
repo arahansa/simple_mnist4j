@@ -7,7 +7,6 @@ import java.util.function.Function;
 /**
  * Created by jarvis on 2017. 4. 27..
  */
-@Component
 public class J02_NumericDiff {
 
     /**

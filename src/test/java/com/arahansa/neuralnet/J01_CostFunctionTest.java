@@ -32,13 +32,18 @@ public class J01_CostFunctionTest {
     // 파이썬 값과 비교한 테스트
     @Test
     public void 교차엔트로피테스트(){
-        Matrix m1 = new Matrix(4, 1);
-        m1.setElements(0.0, 0.9, 0.1, 0.0);
-        Matrix m2 = new Matrix(4, 1);
-        m2.setElements(0, 1, 0, 0);
+        Matrix x = new Matrix(1, 4);
+        x.setElements(0.0, 0.9, 0.1, 0.0);
+        System.out.println(x);
 
-        double crossEntropyErr = costFunction.getCrossEntropyErr(m1, m2);
-        assertThat(crossEntropyErr).isEqualTo(0.10536, offset(0.5));
+        Matrix t = new Matrix(1, 4);
+        t.setElements(0, 1, 0, 0);
+        System.out.println(t);
+
+        double crossEntropyErr = costFunction.getCrossEntropyErr(x, t);
+        assertThat(crossEntropyErr).isEqualTo(0.105360404547, offset(0.000000000001));
+        System.out.println("파이썬의 값  : 0.105360404547");
+        System.out.println("손실함수 값  : "+ crossEntropyErr);
     }
 
 
