@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -32,13 +34,26 @@ public class ArahanMnist {
     @Controller
     public static class HelloController{
 
+        @GetMapping("/hello")
+        @ResponseBody
+        public String helloWorld(){
+            return "helllo world";
+        }
+
+        @GetMapping("/")
+        public String hello(){
+            return "index";
+        }
+
         private J06_TwoLayerNet network;
-        private Map<Integer, Matrix> xtrainSampleMap;
-        private Map<Integer, Matrix> ttrainSampleMap;
+        private Map<Integer, Matrix> xtrainSampleMap, ttrainSampleMap;
+        Matrix x_batch, t_batch;
+        double learning_rate = 0.3;
+
 
         @PostConstruct
         public void setup(){
-            double learning_rate = 0.2;
+
             network = new J06_TwoLayerNet(15, 20, 10, new Float(learning_rate));
             LoadMnist loadMnist = new LoadMnist();
             xtrainSampleMap = loadMnist.getXtrainSampleMap();
@@ -46,8 +61,8 @@ public class ArahanMnist {
 
 
             int size = 10;
-            Matrix x_batch = Matrix.create(size, 15);
-            Matrix t_batch = Matrix.create(size, 10);
+            x_batch = Matrix.create(size, 15);
+            t_batch = Matrix.create(size, 10);
 
             for(int i=0;i<size;i++){
                 ArraySubVector xRow = xtrainSampleMap.get(i % 10).getRow(0);
@@ -69,10 +84,7 @@ public class ArahanMnist {
             log.info("학습완료 디기딩동!");
         }
 
-        @GetMapping("/")
-        public String hello(){
-            return "index";
-        }
+
 
         @PostMapping("/draw")
         public String draw(int[] check, Model model){
@@ -90,16 +102,32 @@ public class ArahanMnist {
         public String realEdu(int[] check, int realanswer){
             log.info("pixel : {}", check);
             log.info("realanswer :{}", realanswer);
-            Matrix m = getMatrixbyCheck(check);
-            Matrix t_batch = Matrix.create(1, 10);
-            final ArraySubVector row = ttrainSampleMap.get(realanswer).getRow(0);
-            t_batch.setRow(0, row);
+
+            Matrix userM = getMatrixbyCheck(check);
+            //  정답 추가
+            int rowCount = x_batch.getShape(0);
+            Matrix newX_batch = addOneRow(x_batch);
+            Matrix newT_batch = addOneRow(t_batch);
+            newX_batch.setRow(rowCount, userM.getRow(0));
+            newT_batch.setRow(rowCount, ttrainSampleMap.get(realanswer).getRow(0));
+            x_batch = newX_batch;
+            t_batch = newT_batch;
 
             for(int i=0;i<1000;i++){
-                Grad grad = network.numerical_gradient(m, t_batch);
-                network.renewParams(grad, 0.1);
+                Grad grad = network.numerical_gradient(x_batch, t_batch);
+                network.renewParams(grad, learning_rate);
             }
             return "redirect:/";
+        }
+
+
+        private Matrix addOneRow(Matrix x){
+            Matrix newM = Matrix.create(x.getShape(0)+1, x.getShape(1));
+
+            for(int i=0;i<x.getShape(0);i++){
+                newM.setRow(i,x.getRow(i));
+            }
+            return newM;
         }
 
         private Matrix getMatrixbyCheck(int[] check){

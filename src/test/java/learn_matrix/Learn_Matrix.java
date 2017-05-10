@@ -4,6 +4,7 @@ import com.arahansa.data.Grad;
 import com.arahansa.neuralnet.J06_TwoLayerNet;
 import lombok.extern.slf4j.Slf4j;
 import mikera.matrixx.Matrix;
+import mikera.vectorz.Vector;
 import org.junit.Test;
 
 /**
@@ -102,17 +103,28 @@ public class Learn_Matrix {
 
 
 
+    @Test
+    public void matrixNewTest() throws Exception{
 
-    /*'W2':
-    ([[-3.99764437, -4.95268584, -5.04966979],
-    [-3.99764437, -4.95268584, -5.04966979],
-    [-3.99764437, -4.95268584, -5.04966979]]),
-    'W1':
-    ([[ -3.44383981e-13,  -1.92823723e-15,   0.00000000e+00],
-     [ -6.88767962e-13,  -3.85647446e-15,   0.00000000e+00],
-     [ -1.03315194e-12,  -5.78471169e-15,   0.00000000e+00]]),
-    'b1':
-    [ -3.44383981e-13,  -1.92823723e-15,   0.00000000e+00]), 'b2': array([-3.99764437, -4.95268584, -5.04966979])}*/
+        Matrix matrix = Matrix.create(2,2);
+        matrix.setElements(1,2,3,4);
+
+        Matrix u = addOneRow(matrix);
+
+
+        log.info("u : {}", u);
+        u.setRow(2, Vector.of(5,6));
+        log.info("u : {}", u);
+    }
+
+    private Matrix addOneRow(Matrix x){
+        Matrix newM = Matrix.create(x.getShape(0)+1, x.getShape(1));
+
+        for(int i=0;i<x.getShape(0);i++){
+            newM.setRow(i,x.getRow(i));
+        }
+        return newM;
+    }
 
 
 

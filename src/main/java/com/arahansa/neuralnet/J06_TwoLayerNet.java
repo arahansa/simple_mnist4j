@@ -92,9 +92,9 @@ public class J06_TwoLayerNet {
 
     public Grad numerical_gradient(Matrix x, Matrix t){
         Grad grad = new Grad();
-        // Context.local.set("W1");
+        Context.local.set("W1");
         grad.setW1(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.W1));
-        //Context.local.set(null);
+        Context.local.set(null);
         grad.setB1(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.b1));
         grad.setW2(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.W2));
         grad.setB2(J07_Gradient.numerical_gradient(this.lossFunc, x, t, this.b2));
